@@ -1,6 +1,5 @@
 var net = require("net");
 var io = require("io");
-var mq = require("mq");
 
 var config = {
 	timeout: 5 * 1000,
@@ -45,9 +44,9 @@ function ConnPool(is_client) {
 				if (now - conn.date > config.timeout) {
 					if (is_client) {
 						conn.write(config.error_timeout,
-							() => conn.aw.end());
+							() => conn.done());
 					} else
-						conn.aw.end();
+						conn.done();
 					conns = conns.slice(1);
 				} else
 					break;
@@ -64,8 +63,8 @@ var clients = new ConnPool(true);
 
 function link(server, client) {
 	function end() {
-		server.aw.end();
-		client.aw.end();
+		server.done();
+		client.done();
 	}
 
 	server.write(client.first_req.join("\r\n") + "\r\n",
@@ -80,29 +79,27 @@ function link(server, client) {
 var re_server = /server (\w+):(.+)/;
 var re_host = /host: *(\w+)\.([^:]+)(:[0-9]+)?/i;
 
-var svr = new net.TcpServer(config.port, (c) => {
+var svr = new net.TcpServer(config.port, sync((c, done) => {
 	var first_req = ["ok"];
-	var aw = mq.await();
 	var bs = new io.BufferedStream(c);
 	bs.EOL = "\r\n";
 
 	function new_line(err, line) {
-		if (err)
-			return aw.end();
+		if (err || line === null)
+			return done();
 
 		first_req.push(line);
 
 		var m = re_host.exec(line);
 		if (m) {
 			if (m[2] != config.domain)
-				return c.write(config.error_domain,
-					() => aw.end());
+				return c.write(config.error_domain, done);
 
 			bs.first_req = first_req;
 
 			var host = m[1];
 			var server = servers.get(host);
-			bs.aw = aw;
+			bs.done = done;
 			if (server)
 				link(server, bs);
 			else
@@ -112,17 +109,17 @@ var svr = new net.TcpServer(config.port, (c) => {
 	}
 
 	function first_line(err, line) {
-		if (err)
-			return aw.end();
+		if (err || line === null)
+			return done();
 
 		var m = re_server.exec(line);
 		if (m) {
 			if (m[2] != "123456") // password
-				return aw.end();
+				return done();
 
 			var host = m[1];
 			var client = clients.get(host);
-			c.aw = aw;
+			c.done = done;
 			if (client)
 				link(c, client);
 			else
@@ -132,8 +129,6 @@ var svr = new net.TcpServer(config.port, (c) => {
 	}
 
 	bs.readLine(first_line);
-
-	return aw;
-});
+}));
 
 svr.run(() => {});
