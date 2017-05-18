@@ -49,7 +49,7 @@ describe("fibyun", () => {
 			sock.write("GET / HTTP\r\nhost: lion.d3j.io:9980\r\n");
 
 			var t1 = new Date();
-			assert.equal(sock.read().toString(), "server not online");
+			assert.equal(sock.read().toString(), "HTTP/1.0 500\n\n server not online");
 			assert.greaterThan(new Date() - t1, 5000);
 		});
 	});
