@@ -3,8 +3,12 @@ test.setup();
 
 var io = require("io");
 var net = require("net");
+var coroutine = require("coroutine");
+var server = require("lib/server");
 
-run("server.js");
+coroutine.start(function() {
+	server.run(() => {});
+});
 
 describe("fibyun", () => {
 	describe("server", () => {
