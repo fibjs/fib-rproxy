@@ -1,7 +1,7 @@
 {
 	"description": "Generic proxy server for fibjs",
 	"license": "MIT",
-	"main": "index.js",
+	"main": "index",
 	"name": "fib-rproxy",
 	"scripts": {
 		"ci": "fibjs test.js"
