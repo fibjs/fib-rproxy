@@ -12,6 +12,8 @@ coroutine.start(function() {
 	});
 });
 
+coroutine.sleep(10);
+
 describe("fibyun", () => {
 	describe("server", () => {
 		it("disconnect on error key", () => {
