@@ -4,7 +4,7 @@ test.setup();
 var io = require("io");
 var net = require("net");
 var coroutine = require("coroutine");
-var server = require("lib/server");
+var server = require("./lib/server");
 
 coroutine.start(function() {
 	server.run({
