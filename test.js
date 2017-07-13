@@ -7,7 +7,9 @@ var coroutine = require("coroutine");
 var server = require("lib/server");
 
 coroutine.start(function() {
-	server.run(() => {});
+	server.run({
+		server_timeout: 5 * 1000
+	});
 });
 
 describe("fibyun", () => {
