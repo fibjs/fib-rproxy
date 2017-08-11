@@ -1,0 +1,67 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "fib-rproxy",
+        "scope": null,
+        "escapedName": "fib-rproxy",
+        "name": "fib-rproxy",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/cwp/Desktop/T2/t2server"
+    ]
+  ],
+  "_from": "fib-rproxy@latest",
+  "_id": "fib-rproxy@0.0.1",
+  "_inCache": true,
+  "_location": "/fib-rproxy",
+  "_nodeVersion": "6.10.1",
+  "_npmUser": {
+    "name": "anleb",
+    "email": "an.wu@d3j.io"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "fib-rproxy",
+    "scope": null,
+    "escapedName": "fib-rproxy",
+    "name": "fib-rproxy",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "http://pm.d3j.io/file/fib-rproxy/0.0.1.tgz",
+  "_shasum": "01024de170e9d7dff440d19fe8c8d6b4dc0a2f11",
+  "_shrinkwrap": null,
+  "_spec": "fib-rproxy",
+  "_where": "/Users/cwp/Desktop/T2/t2server",
+  "dependencies": {},
+  "description": "Generic proxy server for fibjs",
+  "devDependencies": {},
+  "dist": {
+    "shasum": "01024de170e9d7dff440d19fe8c8d6b4dc0a2f11",
+    "tarball": "http://pm.d3j.io/file/fib-rproxy/0.0.1.tgz"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "anleb",
+      "email": "an.wu@d3j.io"
+    }
+  ],
+  "name": "fib-rproxy",
+  "optionalDependencies": {},
+  "readme": "## General proxy server for fibjs\n\n## Install\n\n```sh\nnpm install fib-rproxy [--save]\n```\n\n## Test\n\n```sh\nnpm run ci\n```\n\n## Simple example.\n\n```js\n\n//create proxy server\nvar rproxy = require(\"index\");\n\nrpoxy.server.run(() => {});\n```\n\n\n```js\n//create proxy client\nvar rproxy = require(\"index\");\nvar http = require(\"http\");\n\nvar hdlr = http.fileHandler(\"./\");\nrpoxy.client.run(hdlr);\n```",
+  "readmeFilename": "Readme.md",
+  "scripts": {
+    "ci": "fibjs test.js"
+  },
+  "version": "0.0.1"
+}
