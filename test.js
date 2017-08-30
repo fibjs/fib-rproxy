@@ -88,6 +88,60 @@ describe("fibyun", () => {
 			assert.lessThan(new Date() - t1, 1000);
 		});
 	});
+
+	it("link-saas", () => {
+		var req = [
+			"GET / HTTP",
+			"host: lion.d3j.io",
+			"something else"
+		];
+
+		var sock = net.connect("tcp://127.0.0.1:9980");
+		sock.write("saas lion,lion2:123456\r\n");
+
+		var client = net.connect("tcp://127.0.0.1:9980");
+		client.write(req.join("\r\n") + "\r\n");
+
+		var bs = new io.BufferedStream(sock);
+		bs.EOL = "\r\n";
+
+		var t1 = new Date();
+		assert.equal(bs.readLine(), "lion");
+		assert.lessThan(new Date() - t1, 1000);
+
+		req.forEach((line) => {
+			var t1 = new Date();
+			assert.equal(bs.readLine(), line);
+			assert.lessThan(new Date() - t1, 1000);
+		});
+	});
+
+	it("link-hosts", () => {
+		var req = [
+			"GET / HTTP",
+			"host: lion3.d3j.io",
+			"something else"
+		];
+
+		var sock = net.connect("tcp://127.0.0.1:9980");
+		sock.write("saas lion,lion2,lion3:123456\r\n");
+
+		var client = net.connect("tcp://127.0.0.1:9980");
+		client.write(req.join("\r\n") + "\r\n");
+
+		var bs = new io.BufferedStream(sock);
+		bs.EOL = "\r\n";
+
+		var t1 = new Date();
+		assert.equal(bs.readLine(), "lion3");
+		assert.lessThan(new Date() - t1, 1000);
+
+		req.forEach((line) => {
+			var t1 = new Date();
+			assert.equal(bs.readLine(), line);
+			assert.lessThan(new Date() - t1, 1000);
+		});
+	});
 });
 
 test.run(console.DEBUG);
