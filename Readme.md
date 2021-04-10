@@ -3,13 +3,13 @@
 ## Install
 
 ```sh
-npm install fib-rproxy [--save]
+fibjs --install fib-rproxy
 ```
 
 ## Test
 
 ```sh
-npm run ci
+fibjs test
 ```
 
 ## Simple example.
@@ -17,17 +17,43 @@ npm run ci
 ```js
 
 //create proxy server
-var rproxy = require("index");
+var rproxy = require("fib-rproxy");
 
-rpoxy.server.run(() => {});
+rproxy.server.run({
+    // config
+    server_timeout: 5 * 1000,
+	client_timeout: 5 * 1000,
+	domain: ["d3j.io"],
+	port: 9988,
+	error_domain: `HTTP/1.0 500\n\n unknown domain`,
+	error_timeout: `HTTP/1.0 500\n\n server not online`
+});
 ```
 
 
 ```js
 //create proxy client
-var rproxy = require("index");
 var http = require("http");
 
-var hdlr = http.fileHandler("./");
-rpoxy.client.run(hdlr);
+var rproxy = require("fib-rproxy");
+var rproxyClient = rproxy.client;
+
+var hdlr = new http.Handler({
+    '^/ping': function(v) {
+        v.response.write("pong");
+    },
+    '(.*)': [
+        http.fileHandler("./", {}, true),
+    ]
+})
+
+rproxyClient.run({
+    url: "tcp://127.0.0.1:9988",
+    version: "0.1",
+    password: "123456",
+    handlers: {
+        "proxy": hdlr,
+    }
+});
+
 ```

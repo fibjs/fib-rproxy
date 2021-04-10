@@ -3,8 +3,10 @@ test.setup();
 
 var io = require("io");
 var net = require("net");
+var http = require("http");
 var coroutine = require("coroutine");
 var server = require("./lib/server");
+var client = require("./lib/client");
 
 coroutine.start(function() {
 	server.run({
@@ -142,6 +144,27 @@ describe("fibyun", () => {
 			assert.lessThan(new Date() - t1, 1000);
 		});
 	});
+
+	oit("client handler", () => {
+		client.run({
+		 url: "tcp://127.0.0.1:9980",
+		 password: "123456",
+		 handlers: {
+		  lion4: new http.Handler(function (r) {
+		   r.response.write('hello');
+		  })
+		 }
+		});
+
+		var conn = net.connect("tcp://127.0.0.1:9980");
+		conn.write("GET / HTTP/1.0\r\nHost: lion4.d3j.io\r\n\r\n");
+
+		var data = conn.recv();
+		console.log(data.toString());
+
+		coroutine.sleep(10000000)
+
+	   });
 });
 
 test.run(console.DEBUG);
